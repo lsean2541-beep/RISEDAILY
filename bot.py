@@ -4,105 +4,105 @@ import logging
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# Enable logging
+# Ativar logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-# Get token from environment variable
+# Obter token da variável de ambiente
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
-# Check if token exists
+# Verificar se o token existe
 if not TOKEN:
-    logger.error("TELEGRAM_BOT_TOKEN environment variable is not set!")
-    print("ERROR: TELEGRAM_BOT_TOKEN environment variable is not set!")
+    logger.error("A variável de ambiente TELEGRAM_BOT_TOKEN não está definida!")
+    print("ERRO: A variável de ambiente TELEGRAM_BOT_TOKEN não está definida!")
     exit(1)
 
-# Quote database organized by topic
+# Banco de dados de frases organizado por tópicos
 QUOTES = {
-    "success": [
-        "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
-        "The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt",
-        "Success usually comes to those who are too busy to be looking for it. - Henry David Thoreau",
-        "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
-        "The secret of success is to do the common thing uncommonly well. - John D. Rockefeller Jr."
+    "sucesso": [
+        "O sucesso não é definitivo, o fracasso não é fatal: o que conta é a coragem para continuar. - Winston Churchill",
+        "O único limite para a nossa realização de amanhã são as nossas dúvidas de hoje. - Franklin D. Roosevelt",
+        "O sucesso geralmente vem para aqueles que estão ocupados demais para procurá-lo. - Henry David Thoreau",
+        "Não olhe para o relógio; faça o que ele faz. Continue andando. - Sam Levenson",
+        "O segredo do sucesso é fazer o que é comum de maneira incomum. - John D. Rockefeller Jr."
     ],
-    "life": [
-        "Life is what happens when you're busy making other plans. - John Lennon",
-        "In the end, it's not the years in your life that count. It's the life in your years. - Abraham Lincoln",
-        "The purpose of our lives is to be happy. - Dalai Lama",
-        "Life is really simple, but we insist on making it complicated. - Confucius",
-        "Get busy living or get busy dying. - Stephen King"
+    "vida": [
+        "A vida é o que acontece enquanto você está ocupado fazendo outros planos. - John Lennon",
+        "No final, não são os anos em sua vida que contam. É a vida nos seus anos. - Abraham Lincoln",
+        "O propósito das nossas vidas é ser feliz. - Dalai Lama",
+        "A vida é muito simples, mas insistimos em torná-la complicada. - Confúcio",
+        "Ocupe-se vivendo ou ocupe-se morrendo. - Stephen King"
     ],
-    "happiness": [
-        "Happiness is not something readymade. It comes from your own actions. - Dalai Lama",
-        "For every minute you are angry you lose sixty seconds of happiness. - Ralph Waldo Emerson",
-        "The happiness of your life depends upon the quality of your thoughts. - Marcus Aurelius",
-        "Happiness is when what you think, what you say, and what you do are in harmony. - Mahatma Gandhi",
-        "The secret of happiness is freedom. The secret of freedom is courage. - Thucydides"
+    "felicidade": [
+        "A felicidade não é algo pronto. Ela vem das suas próprias ações. - Dalai Lama",
+        "Para cada minuto que você passa com raiva, você perde sessenta segundos de felicidade. - Ralph Waldo Emerson",
+        "A felicidade da sua vida depende da qualidade dos seus pensamentos. - Marcus Aurelius",
+        "A felicidade é quando o que você pensa, o que você diz e o que você faz estão em harmonia. - Mahatma Gandhi",
+        "O segredo da felicidade é a liberdade. O segredo da liberdade é a coragem. - Tucídides"
     ],
-    "strength": [
-        "Strength does not come from physical capacity. It comes from an indomitable will. - Mahatma Gandhi",
-        "You never know how strong you are until being strong is your only choice. - Bob Marley",
-        "Strength and growth come only through continuous effort and struggle. - Napoleon Hill",
-        "The world breaks everyone, and afterward, some are strong at the broken places. - Ernest Hemingway",
-        "Difficulties strengthen the mind, as labor does the body. - Seneca"
+    "forca": [
+        "A força não vem da capacidade física. Ela vem de uma vontade indomável. - Mahatma Gandhi",
+        "Você nunca sabe quão forte é, até que ser forte seja a sua única escolha. - Bob Marley",
+        "A força e o crescimento vêm apenas através do esforço e da luta contínuos. - Napoleon Hill",
+        "O mundo quebra a todos, e depois, alguns são mais fortes nos lugares quebrados. - Ernest Hemingway",
+        "As dificuldades fortalecem a mente, assim como o trabalho faz com o corpo. - Sêneca"
     ]
 }
 
-# Flatten all quotes for random selection
+# Juntar todas as frases para seleção aleatória
 ALL_QUOTES = []
 for topic_quotes in QUOTES.values():
     ALL_QUOTES.extend(topic_quotes)
 
-# /start command
+# Comando /start
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_message = (
-        "Welcome to DailyMotivationBot\n\n"
-        "Send /quote for a random motivational quote\n"
-        "Send /topic to get quotes by category\n"
-        "Send /help for all commands\n\n"
-        "Available topics: success, life, happiness, strength\n\n"
-        "Type /quote to get started."
+        "Bem-vindo ao DailyMotivationBot\n\n"
+        "Envie /quote para receber uma frase motivacional aleatória\n"
+        "Envie /topic para receber frases por categoria\n"
+        "Envie /help para ver todos os comandos\n\n"
+        "Tópicos disponíveis: sucesso, vida, felicidade, forca\n\n"
+        "Digite /quote para começar."
     )
     await update.message.reply_text(welcome_message)
 
-# /help command
+# Comando /help
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     help_message = (
-        "DailyMotivationBot Commands\n\n"
-        "/quote - Get a random motivational quote\n"
-        "/topic - Get a quote by topic\n"
-        "/help - Show this message\n\n"
-        "Quote Topics:\n"
-        "• success\n"
-        "• life\n"
-        "• happiness\n"
-        "• strength\n\n"
-        "Example: /topic success"
+        "Comandos do DailyMotivationBot\n\n"
+        "/quote - Receba uma frase motivacional aleatória\n"
+        "/topic - Receba uma frase por tópico\n"
+        "/help - Mostra esta mensagem\n\n"
+        "Tópicos de Frases:\n"
+        "• sucesso\n"
+        "• vida\n"
+        "• felicidade\n"
+        "• forca\n\n"
+        "Exemplo: /topic sucesso"
     )
     await update.message.reply_text(help_message)
 
-# /quote command - random quote
+# Comando /quote - frase aleatória
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = random.choice(ALL_QUOTES)
-    response = f"📖 Motivation for you:\n\n{quote}\n\nSend /quote for another or /topic for specific topics."
+    response = f"📖 Motivação para você:\n\n{quote}\n\nEnvie /quote para outra ou /topic para tópicos específicos."
     await update.message.reply_text(response)
 
-# /topic command - quote by topic
+# Comando /topic - frase por tópico
 async def topic_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Check if user provided a topic
+    # Verificar se o usuário forneceu um tópico
     if not context.args:
         topic_help = (
-            "Please specify a topic:\n\n"
-            "Available topics:\n"
-            "• success\n"
-            "• life\n"
-            "• happiness\n"
-            "• strength\n\n"
-            "Example: /topic success"
+            "Por favor, especifique um tópico:\n\n"
+            "Tópicos disponíveis:\n"
+            "• sucesso\n"
+            "• vida\n"
+            "• felicidade\n"
+            "• forca\n\n"
+            "Exemplo: /topic sucesso"
         )
         await update.message.reply_text(topic_help)
         return
@@ -111,66 +111,66 @@ async def topic_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if topic in QUOTES:
         quote = random.choice(QUOTES[topic])
-        response = f"📖 {topic.title()} quote:\n\n{quote}\n\nSend /quote for random or /topic [topic] for another."
+        response = f"📖 Frase sobre {topic.title()}:\n\n{quote}\n\nEnvie /quote para uma aleatória ou /topic [{topic}] para outra."
         await update.message.reply_text(response)
     else:
         error_message = (
-            f"Topic '{topic}' not found.\n\n"
-            "Available topics:\n"
-            "• success\n"
-            "• life\n"
-            "• happiness\n"
-            "• strength\n\n"
-            "Example: /topic success"
+            f"O tópico '{topic}' não foi encontrado.\n\n"
+            "Tópicos disponíveis:\n"
+            "• sucesso\n"
+            "• vida\n"
+            "• felicidade\n"
+            "• forca\n\n"
+            "Exemplo: /topic sucesso"
         )
         await update.message.reply_text(error_message)
 
-# Handle unknown commands
+# Lidar com comandos desconhecidos
 async def unknown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Command not recognized.\n\n"
-        "Send /help to see all available commands."
+        "Comando não reconhecido.\n\n"
+        "Envie /help para ver todos os comandos disponíveis."
     )
 
-# Error handler
+# Gerenciador de erros
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    logger.error(f"Update {update} caused error {context.error}")
+    logger.error(f"A atualização {update} causou o erro {context.error}")
     if update and update.effective_message:
         await update.effective_message.reply_text(
-            "An error occurred. Please try again or send /help."
+            "Ocorreu um erro. Por favor, tente novamente ou envie /help."
         )
 
-# Set bot commands menu
+# Definir o menu de comandos do bot
 async def post_init(application: Application):
     commands = [
-        BotCommand("quote", "Get a random motivational quote"),
-        BotCommand("topic", "Get quote by topic (success, life, happiness, strength)"),
-        BotCommand("help", "Show all commands"),
+        BotCommand("quote", "Receba uma frase motivacional aleatória"),
+        BotCommand("topic", "Frase por tópico (sucesso, vida, felicidade, forca)"),
+        BotCommand("help", "Mostrar todos os comandos"),
     ]
     await application.bot.set_my_commands(commands)
 
 def main():
-    print("Starting DailyMotivationBot...")
-    print(f"Using token: {TOKEN[:10]}... (hidden)")
+    print("Iniciando DailyMotivationBot...")
+    print(f"Usando o token: {TOKEN[:10]}... (oculto)")
     
-    # Create application
+    # Criar aplicação
     app = Application.builder().token(TOKEN).build()
     
-    # Add command handlers
+    # Adicionar manipuladores de comandos
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("quote", quote_command))
     app.add_handler(CommandHandler("topic", topic_command))
     app.add_handler(MessageHandler(filters.COMMAND, unknown_command))
     
-    # Add error handler
+    # Adicionar gerenciador de erros
     app.add_error_handler(error_handler)
     
-    # Set commands menu
+    # Definir menu de comandos
     app.post_init = post_init
     
-    # Start the bot
-    print("Bot is running and ready for messages...")
+    # Iniciar o bot
+    print("O bot está rodando e pronto para receber mensagens...")
     app.run_polling()
 
 if __name__ == "__main__":
