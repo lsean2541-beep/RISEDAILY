@@ -17,6 +17,10 @@ PORT = int(os.environ.get('PORT', 8080))
 CHANNEL_1_LINK = "https://t.me/LMPbravo1"
 CHANNEL_2_LINK = "https://t.me/Santorini222"
 
+# Your image links
+CHANNEL_1_IMAGE = "https://www.image2url.com/r2/default/images/1780960885672-bf3563f6-71a8-49a3-bc6e-9912c68f9241.png"
+CHANNEL_2_IMAGE = "https://www.image2url.com/r2/default/images/1780960946424-a74ff0de-0d4d-4fbc-ab66-d3d277535e95.png"
+
 # Welcome message
 WELCOME_MESSAGE = """
 🎯 *BEM-VINDO AO PORTAL DE APOSTAS* 🎯
@@ -33,13 +37,19 @@ Escolha seu canal de football betting preferido:
 flask_app = Flask(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Send welcome message with channel buttons"""
+    """Send welcome message with channel buttons and images"""
     keyboard = [
         [InlineKeyboardButton("📢 CANAL 1 - LMP BRAVO", url=CHANNEL_1_LINK)],
         [InlineKeyboardButton("🎲 CANAL 2 - SANTORINI", url=CHANNEL_2_LINK)],
         [InlineKeyboardButton("❓ AJUDA", callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    # Send the proof images first
+    await update.message.reply_photo(CHANNEL_1_IMAGE, caption="📊 *Múltiplas do Canal 1 - Odds até 3.39x*", parse_mode='Markdown')
+    await update.message.reply_photo(CHANNEL_2_IMAGE, caption="🎯 *Seleções do Canal 2 - Múltiplas especiais*", parse_mode='Markdown')
+    
+    # Then send welcome message with buttons
     await update.message.reply_text(WELCOME_MESSAGE, parse_mode='Markdown', reply_markup=reply_markup)
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
