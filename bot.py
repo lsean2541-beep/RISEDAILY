@@ -14,44 +14,44 @@ logger = logging.getLogger(__name__)
 TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 PORT = int(os.environ.get('PORT', 8080))
 
-# Motivational quotes in Portuguese
+# Motivational quotes in English
 QUOTES = [
-    "✨ Nem todo dia é bom, mas existe algo bom em todo dia.",
-    "⚽ O jogo só acaba quando o apito final toca. Continue.",
-    "🌅 Pequenos passos todos os dias. É assim que se chega longe.",
-    "💪 Você é mais forte do que os desafios de hoje.",
-    "📖 Cada dia é uma nova página. Escreva algo bonito.",
-    "🎯 Foco no que você pode controlar. O resto é barulho.",
-    "🕊️ Respire. Recomece. Siga em frente.",
-    "🏆 A jornada é difícil, mas a chegada vale cada momento.",
-    "🌱 Pequenas vitórias também são vitórias. Comemore cada uma.",
-    "🎧 Coloque sua música favorita. Hoje vai ser um bom dia.",
-    "☕ Uma coisa de cada vez. Sem pressa. Sem pressão.",
-    "🌟 Você já superou dias piores. Este também vai passar.",
-    "📌 Hoje é um novo começo. Use bem ele.",
-    "🤝 Seja gentil com você mesmo. Você está tentando.",
-    "🎈 Sorria. Nem que seja por um segundo. Isso já ajuda.",
+    "✨ Not every day is good, but there is something good in every day.",
+    "⚽ The game only ends when the final whistle blows. Keep going.",
+    "🌅 Small steps every day. That's how you go far.",
+    "💪 You are stronger than today's challenges.",
+    "📖 Each day is a new page. Write something beautiful.",
+    "🎯 Focus on what you can control. The rest is noise.",
+    "🕊️ Breathe. Restart. Move forward.",
+    "🏆 The journey is hard, but the arrival is worth every moment.",
+    "🌱 Small wins are still wins. Celebrate each one.",
+    "🎧 Play your favorite song. Today will be a good day.",
+    "☕ One thing at a time. No rush. No pressure.",
+    "🌟 You have survived worse days. This one will pass too.",
+    "📌 Today is a new beginning. Use it well.",
+    "🤝 Be kind to yourself. You are trying.",
+    "🎈 Smile. Even for one second. It helps.",
 ]
 
 # Categories
 CATEGORIES = {
-    "vida": ["🌱 A vida é feita de recomeços. Hoje é um deles.", "📖 Sua história ainda está sendo escrita.", "🌟 A vida não é perfeita, mas você pode tornar seu dia melhor."],
-    "forca": ["💪 Você já superou desafios antes. Este não será diferente.", "⚡ A força não vem do corpo. Vem da vontade.", "🛡️ Mesmo cansado, você continua. Isso é força."],
-    "felicidade": ["😊 Felicidade não é um destino. É um jeito de caminhar.", "🌸 Pequenas coisas trazem alegria. Um café. Um sol. Uma pausa.", "🎵 A felicidade mora nos momentos simples."],
-    "sucesso": ["🎯 Sucesso é não desistir um dia a mais que os outros.", "📈 Cada pequeno avanço é vitória.", "🏆 Sucesso é seguir em frente quando tudo diz para parar."],
+    "life": ["🌱 Life is made of fresh starts. Today is one of them.", "📖 Your story is still being written.", "🌟 Life is not perfect, but you can make your day better."],
+    "strength": ["💪 You have overcome challenges before. This one is no different.", "⚡ Strength does not come from the body. It comes from will.", "🛡️ Even tired, you keep going. That is strength."],
+    "happiness": ["😊 Happiness is not a destination. It is a way of walking.", "🌸 Small things bring joy. A coffee. The sun. A pause.", "🎵 Happiness lives in simple moments."],
+    "success": ["🎯 Success is not giving up one day longer than others.", "📈 Every small step forward is a win.", "🏆 Success is moving forward when everything says to stop."],
 }
 
 # Welcome message
 WELCOME_MESSAGE = """
-📌 *Segundo Tempo*
+📌 *Second Half*
 
-Frases curtas para o seu dia.
+Short phrases for your day.
 
-/enviar - receba uma frase
-/topico - escolha por categoria
-/ajuda - veja os comandos
+/send - get a random phrase
+/topic - choose by category
+/help - see all commands
 
-Uma mensagem por vez. 18+
+One message at a time.
 """
 
 # Create Flask app
@@ -60,9 +60,9 @@ flask_app = Flask(__name__)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send welcome message"""
     keyboard = [
-        [InlineKeyboardButton("📨 Enviar frase", callback_data='quote')],
-        [InlineKeyboardButton("📂 Escolher categoria", callback_data='topic')],
-        [InlineKeyboardButton("❓ Ajuda", callback_data='help')]
+        [InlineKeyboardButton("📨 Send phrase", callback_data='quote')],
+        [InlineKeyboardButton("📂 Choose category", callback_data='topic')],
+        [InlineKeyboardButton("❓ Help", callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(WELCOME_MESSAGE, parse_mode='Markdown', reply_markup=reply_markup)
@@ -70,7 +70,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send random quote"""
     quote = random.choice(QUOTES)
-    keyboard = [[InlineKeyboardButton("📨 Nova frase", callback_data='quote')]]
+    keyboard = [[InlineKeyboardButton("📨 New phrase", callback_data='quote')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     if update.callback_query:
@@ -82,27 +82,27 @@ async def send_quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def show_topics(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Show topic categories"""
     keyboard = [
-        [InlineKeyboardButton("🌱 Vida", callback_data='topic_vida')],
-        [InlineKeyboardButton("💪 Força", callback_data='topic_forca')],
-        [InlineKeyboardButton("😊 Felicidade", callback_data='topic_felicidade')],
-        [InlineKeyboardButton("🎯 Sucesso", callback_data='topic_sucesso')],
-        [InlineKeyboardButton("🔙 Voltar", callback_data='back')]
+        [InlineKeyboardButton("🌱 Life", callback_data='topic_life')],
+        [InlineKeyboardButton("💪 Strength", callback_data='topic_strength')],
+        [InlineKeyboardButton("😊 Happiness", callback_data='topic_happiness')],
+        [InlineKeyboardButton("🎯 Success", callback_data='topic_success')],
+        [InlineKeyboardButton("🔙 Back", callback_data='back')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     if update.callback_query:
-        await update.callback_query.message.reply_text("📂 *Escolha uma categoria:*", parse_mode='Markdown', reply_markup=reply_markup)
+        await update.callback_query.message.reply_text("📂 *Choose a category:*", parse_mode='Markdown', reply_markup=reply_markup)
         await update.callback_query.answer()
     else:
-        await update.message.reply_text("📂 *Escolha uma categoria:*", parse_mode='Markdown', reply_markup=reply_markup)
+        await update.message.reply_text("📂 *Choose a category:*", parse_mode='Markdown', reply_markup=reply_markup)
 
 async def send_topic_quote(update: Update, context: ContextTypes.DEFAULT_TYPE, topic_key):
     """Send quote from specific category"""
     quotes = CATEGORIES.get(topic_key, QUOTES)
     quote = random.choice(quotes)
     keyboard = [
-        [InlineKeyboardButton("📨 Outra frase", callback_data=f'topic_{topic_key}')],
-        [InlineKeyboardButton("🔙 Voltar aos tópicos", callback_data='topic')]
+        [InlineKeyboardButton("📨 Another phrase", callback_data=f'topic_{topic_key}')],
+        [InlineKeyboardButton("🔙 Back to topics", callback_data='topic')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.callback_query.message.reply_text(quote, reply_markup=reply_markup)
@@ -111,19 +111,19 @@ async def send_topic_quote(update: Update, context: ContextTypes.DEFAULT_TYPE, t
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send help message"""
     help_text = """
-📌 *Comandos disponíveis:*
+📌 *Available commands:*
 
-/enviar - frase aleatória
-/topico - frases por categoria
-/ajuda - este menu
-/start - voltar ao início
+/send - random phrase
+/topic - phrases by category
+/help - this menu
+/start - return to main menu
 
-📂 *Categorias:*
-vida, força, felicidade, sucesso
+📂 *Categories:*
+life, strength, happiness, success
 
-Uma mensagem por vez. 18+
+One message at a time.
 """
-    keyboard = [[InlineKeyboardButton("🔙 Voltar", callback_data='back')]]
+    keyboard = [[InlineKeyboardButton("🔙 Back", callback_data='back')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     if update.callback_query:
@@ -135,9 +135,9 @@ Uma mensagem por vez. 18+
 async def back_to_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Return to main menu"""
     keyboard = [
-        [InlineKeyboardButton("📨 Enviar frase", callback_data='quote')],
-        [InlineKeyboardButton("📂 Escolher categoria", callback_data='topic')],
-        [InlineKeyboardButton("❓ Ajuda", callback_data='help')]
+        [InlineKeyboardButton("📨 Send phrase", callback_data='quote')],
+        [InlineKeyboardButton("📂 Choose category", callback_data='topic')],
+        [InlineKeyboardButton("❓ Help", callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.callback_query.message.reply_text(WELCOME_MESSAGE, parse_mode='Markdown', reply_markup=reply_markup)
@@ -184,11 +184,9 @@ if __name__ == '__main__':
     
     # Add handlers
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("enviar", send_quote))
+    application.add_handler(CommandHandler("send", send_quote))
     application.add_handler(CommandHandler("quote", send_quote))
-    application.add_handler(CommandHandler("topico", show_topics))
     application.add_handler(CommandHandler("topic", show_topics))
-    application.add_handler(CommandHandler("ajuda", help_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CallbackQueryHandler(button_callback))
     
